@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodapp/constants/routes.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginView extends StatefulWidget {
@@ -39,7 +41,7 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   Text(
                     "FLASH",
-                    style: GoogleFonts.boogaloo(
+                    style: GoogleFonts.bebasNeue(
                       fontSize: 30,
                       fontStyle: FontStyle.italic,
                     ),
@@ -47,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(width: 5),
                   Text(
                     "EATS",
-                    style: GoogleFonts.boogaloo(
+                    style: GoogleFonts.bebasNeue(
                       fontSize: 30,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
@@ -70,7 +72,7 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 40),
 
               // Welcome back! 歡迎回來
-              const Text("歡迎回來!",
+              const Text("Welcome Back!",
                   style: TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.w400,
@@ -154,7 +156,20 @@ class _LoginViewState extends State<LoginView> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if (currentUser != null) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
+                    } else {
+                      //
+                    };
+                  },
                   child: const Text(
                     "Sign In",
                     style: TextStyle(
@@ -164,6 +179,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
 
+              // Padding
               const SizedBox(
                 height: 50,
               ),
