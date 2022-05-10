@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "131601801894",
+    "project_id": "yummy-delivery-app",
+    "storage_bucket": "yummy-delivery-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131601801894:android:75e43a99954018c4054a67",
+        "android_client_info": {
+          "package_name": "com.kevr.foodapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131601801894-fjmilnd94hvqgeihr08h06b1rgchnsvl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCRwl0vmPqTyYZuB1PR7tutFpPxi3GgOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131601801894-fjmilnd94hvqgeihr08h06b1rgchnsvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
