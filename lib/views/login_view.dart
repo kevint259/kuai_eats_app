@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
@@ -36,198 +34,204 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[300],
-        body: SafeArea(
-            child: Column(children: [
-          // yummy delivery title
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "FLASH",
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 30,
-                  fontStyle: FontStyle.italic,
+      backgroundColor: Colors.grey[300],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // yummy delivery title
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "FLASH",
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 30,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 5),
-              Text(
-                "EATS",
-                style: GoogleFonts.bebasNeue(
-                  fontSize: 30,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                const SizedBox(width: 5),
+                Text(
+                  "EATS",
+                  style: GoogleFonts.bebasNeue(
+                    fontSize: 30,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
-              ),
-            ],
-          ),
-
-          // Padding
-          const SizedBox(
-            height: 30.0,
-          ),
-
-          // picture
-          const CircleAvatar(
-            backgroundImage: AssetImage('assets/images/delivery.jpg'),
-            radius: 120,
-          ),
-          const SizedBox(height: 40),
-
-          // Welcome back! 歡迎回來
-          const Text("Welcome Back!",
-              style: TextStyle(
-                fontSize: 35,
-                fontWeight: FontWeight.w400,
-              )),
-
-          // Padding
-          const SizedBox(
-            height: 20,
-          ),
-
-          // email
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextFormField(
-                controller: _email,
-                obscureText: false,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Email",
-                  contentPadding: EdgeInsets.only(left: 20.0),
-                ),
-                enableSuggestions: false,
-                autocorrect: false,
-              ),
+              ],
             ),
-          ),
 
-          // Padding
-          const SizedBox(
-            height: 15,
-          ),
-
-          // password
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: TextFormField(
-                controller: _password,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Password",
-                  contentPadding: EdgeInsets.only(left: 20.0),
-                ),
-                enableSuggestions: false,
-                autocorrect: false,
-              ),
+            // Padding
+            const SizedBox(
+              height: 30.0,
             ),
-          ),
 
-          // Padding
-          const SizedBox(
-            height: 10,
-          ),
-
-          //Error Message
-          Text(
-            _errorMessage,
-            style: const TextStyle(
-                color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-
-          // Padding
-          const SizedBox(
-            height: 40,
-          ),
-
-          //sign in button
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(10.0),
+            // picture
+            const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/delivery.jpg'),
+              radius: 120,
             ),
-            child: TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
-                  final currentUser = FirebaseAuth.instance.currentUser;
-                  if (currentUser != null) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        deliveryRoute, (route) => false);
-                  }
-                } on FirebaseAuthException catch (e) {
-                  setState(() {
-                    _errorMessage = validate(e.code);
-                  });
-                  log(e.code);
-                }
-              },
-              child: const Text(
-                "Sign In",
+            const SizedBox(height: 40),
+
+            // Welcome back! 歡迎回來
+            const Text("Welcome Back!",
                 style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.w400,
+                )),
+
+            // Padding
+            const SizedBox(
+              height: 20,
+            ),
+
+            // email
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Container(
+                decoration: BoxDecoration(
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _email,
+                  obscureText: false,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Email",
+                    contentPadding: EdgeInsets.only(left: 20.0),
+                  ),
+                  enableSuggestions: false,
+                  autocorrect: false,
                 ),
               ),
             ),
-          ),
 
-          //Forgot Password?
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Forgot Password?",
+            // Padding
+            const SizedBox(
+              height: 15,
             ),
-          ),
 
-          // Padding
-          const SizedBox(
-            height: 50,
-          ),
+            // password
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Password",
+                    contentPadding: EdgeInsets.only(left: 20.0),
+                  ),
+                  enableSuggestions: false,
+                  autocorrect: false,
+                ),
+              ),
+            ),
 
-          //Not a member? Register here!
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Don't have an account?",
-                style: TextStyle(fontSize: 16),
+            // Padding
+            const SizedBox(
+              height: 10,
+            ),
+
+            //Error Message
+            Text(
+              _errorMessage,
+              style: const TextStyle(
+                  color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            // Padding
+            const SizedBox(
+              height: 40,
+            ),
+
+            //sign in button
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10.0),
               ),
-              const SizedBox(
-                width: 3,
+              child: TextButton(
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  try {
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if (currentUser != null) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          deliveryRoute, (route) => false);
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    setState(() {
+                      _errorMessage = validate(e.code);
+                    });
+                    log(e.code);
+                  }
+                },
+                child: const Text(
+                  "Sign In",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              GestureDetector(
-                child: const Text("Register here.",
+            ),
+
+            //Forgot Password?
+            TextButton(
+              onPressed: () {},
+              child: const Text(
+                "Forgot Password?",
+              ),
+            ),
+
+            // Padding
+            const SizedBox(
+              height: 50,
+            ),
+
+            //Not a member? Register here!
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(
+                  width: 3,
+                ),
+                GestureDetector(
+                  child: const Text(
+                    "Register here.",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.blue,
                     ),
-                ),
-                onTap: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
-                },
-              )
-            ],
-          )
-        ],),),);
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        registerRoute, (route) => false);
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 
