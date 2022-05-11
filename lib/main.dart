@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/views/home_delivery.dart';
 import 'package:foodapp/views/login_view.dart';
+import 'package:foodapp/views/register_view.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -19,6 +20,7 @@ void main() {
       routes: {
         loginRoute: (context) => const LoginView(),
         deliveryRoute:(context) => const DeliveryView(),
+        registerRoute: (context) => const RegisterView(),
       },
     )
   );
