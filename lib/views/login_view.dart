@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:developer';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -13,6 +16,8 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  String _errorMessage = '';
+  final bool errorMessage = false;
 
   @override
   void initState() {
@@ -91,7 +96,7 @@ class _LoginViewState extends State<LoginView> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: TextField(
+                  child: TextFormField(
                     controller: _email,
                     obscureText: false,
                     decoration: const InputDecoration(
@@ -118,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: TextField(
+                  child: TextFormField(
                     controller: _password,
                     obscureText: true,
                     decoration: const InputDecoration(
@@ -131,21 +136,22 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
               ),
+              
+              // Padding
+              const SizedBox(height: 10,),
 
-              //Forgot Password?
-              Padding(
-                padding: const EdgeInsets.only(left: 200),
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Forgot Password?",
-                  ),
-                ),
+              //Error Message
+              Text(
+                _errorMessage,
+                style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
 
               // Padding
               const SizedBox(
-                height: 15,
+                height: 40,
               ),
 
               //sign in button
@@ -159,16 +165,22 @@ class _LoginViewState extends State<LoginView> {
                   onPressed: () async {
                     final email = _email.text;
                     final password = _password.text;
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser != null) {
-                      Navigator.of(context).pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
-                    } else {
-                      //
-                    };
+                    try {
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      if (currentUser != null) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            deliveryRoute, (route) => false);
+                      } 
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        _errorMessage = validate(e.code);
+                      });
+                      log(e.code);
+                    }
                   },
                   child: const Text(
                     "Sign In",
@@ -176,6 +188,14 @@ class _LoginViewState extends State<LoginView> {
                       color: Colors.white,
                     ),
                   ),
+                ),
+              ),
+
+                            //Forgot Password?
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  "Forgot Password?",
                 ),
               ),
 
@@ -209,3 +229,15 @@ class _LoginViewState extends State<LoginView> {
         ));
   }
 }
+
+String validate(String value) {
+    if (value == "invalid-email") {
+      return "Please enter valid email address";
+    } else if (value == '') {
+      return "Fields can't be empty";
+    } else if (value == 'wrong-password') {
+      return "Password can't be empty";
+    } else {
+      return "User Not Found";
+    }
+  }
