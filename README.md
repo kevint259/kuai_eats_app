@@ -1,4 +1,4 @@
-# foodapp
+# Flash Eats Food Delivery App
 
 A new Flutter project.
 
