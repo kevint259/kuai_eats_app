@@ -6,6 +6,7 @@ import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/views/home_delivery.dart';
 import 'package:foodapp/views/login_view.dart';
 import 'package:foodapp/views/register_view.dart';
+import 'package:foodapp/views/verify_email.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -21,6 +22,7 @@ void main() {
         loginRoute: (context) => const LoginView(),
         deliveryRoute:(context) => const DeliveryView(),
         registerRoute: (context) => const RegisterView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     )
   );

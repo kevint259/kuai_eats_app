@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:foodapp/constants/routes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterView extends StatefulWidget {
@@ -180,10 +181,15 @@ class _RegisterViewState extends State<RegisterView> {
             const SizedBox(height: 20),
 
             //Error Message
-            Text(
-              _errorMessage,
-              style: const TextStyle(
-                  color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                _errorMessage,
+                style: const TextStyle(
+                    color: Colors.red, 
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
 
             // Padding
@@ -210,6 +216,7 @@ class _RegisterViewState extends State<RegisterView> {
                             email: _email.text, password: _password.text);
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: _email.text, password: _password.text);
+                    Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
                   } else {
                     setState(() {
                       _errorMessage =
@@ -217,12 +224,13 @@ class _RegisterViewState extends State<RegisterView> {
                               .toString();
                     });
                   }
-            
                   // also need to verify user's email
                   final user = FirebaseAuth.instance.currentUser;
                   if (user != null) {
-                    log(user.uid.toString());
-                    await user.updateDisplayName("$_firstName $_lastName");
+                    final firstName = _firstName.text;
+                    final lastName = _firstName.text;
+                    await user.updateDisplayName("$firstName $lastName");
+                    log(user.displayName ?? "NO NAME");
                   }
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'invalid-email') {
@@ -303,7 +311,7 @@ String? validatePassword(String pass1, String pass2) {
     return "Please enter password";
   } else {
     if (!regex.hasMatch(pass1) && (pass1 == pass2)) {
-      return "Please enter valid password (at least 1 upper, 1 lower, 1 number)";
+      return "Please enter valid password (at least 1 uppercase, 1 lowercase, 1 number)";
     } else {
       return null;
     }

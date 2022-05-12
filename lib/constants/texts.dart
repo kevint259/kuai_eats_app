@@ -1,0 +1,1 @@
+const String verifyEmailText = "Please verify your email below so that you can start using Flash Eats!";
