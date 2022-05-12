@@ -1,9 +1,9 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
+import 'package:foodapp/constants/texts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterView extends StatefulWidget {
@@ -15,7 +15,7 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   // only for dummy purposes (link isn't real terms and conditions)
-  final Uri _url = Uri.parse("https://www.google.com");
+  final Uri _url = Uri.parse(termsLink);
   String _errorMessage = '';
   late final TextEditingController _firstName;
   late final TextEditingController _lastName;
@@ -55,7 +55,7 @@ class _RegisterViewState extends State<RegisterView> {
               child: Padding(
                 padding: EdgeInsets.only(top: 100),
                 child: Text(
-                  "Sign up here.",
+                  signUpHere,
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class _RegisterViewState extends State<RegisterView> {
                 child: TextFormField(
                     controller: _firstName,
                     decoration: const InputDecoration(
-                      hintText: "First Name",
+                      hintText: firstName,
                       prefixIcon: Icon(Icons.account_circle_outlined),
                     )),
               ),
@@ -103,7 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
                 child: TextFormField(
                     controller: _lastName,
                     decoration: const InputDecoration(
-                      hintText: "Last Name",
+                      hintText: lastName,
                       prefixIcon: Icon(Icons.account_circle_outlined),
                     )),
               ),
@@ -125,7 +125,7 @@ class _RegisterViewState extends State<RegisterView> {
                 child: TextFormField(
                     controller: _email,
                     decoration: const InputDecoration(
-                      hintText: "Email",
+                      hintText: email,
                       prefixIcon: Icon(Icons.email_outlined),
                     )),
               ),
@@ -148,7 +148,7 @@ class _RegisterViewState extends State<RegisterView> {
                     obscureText: true,
                     controller: _password,
                     decoration: const InputDecoration(
-                      hintText: "Password",
+                      hintText: password,
                       prefixIcon: Icon(Icons.key_outlined),
                     )),
               ),
@@ -171,7 +171,7 @@ class _RegisterViewState extends State<RegisterView> {
                     obscureText: true,
                     controller: _passwordConfirmation,
                     decoration: const InputDecoration(
-                      hintText: "Confirm Password",
+                      hintText: confirmPassword,
                       prefixIcon: Icon(Icons.key_outlined),
                     )),
               ),
@@ -223,14 +223,6 @@ class _RegisterViewState extends State<RegisterView> {
                           validatePassword(password, passwordConfirmation)
                               .toString();
                     });
-                  }
-                  // also need to verify user's email
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    final firstName = _firstName.text;
-                    final lastName = _firstName.text;
-                    await user.updateDisplayName("$firstName $lastName");
-                    log(user.displayName ?? "NO NAME");
                   }
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'invalid-email') {
@@ -308,10 +300,10 @@ class _RegisterViewState extends State<RegisterView> {
 String? validatePassword(String pass1, String pass2) {
   RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,20}$');
   if (pass1.isEmpty || pass2.isEmpty) {
-    return "Please enter password";
+    return enterPasswordText;
   } else {
     if (!regex.hasMatch(pass1) && (pass1 == pass2)) {
-      return "Please enter valid password (at least 1 uppercase, 1 lowercase, 1 number)";
+      return validPasswordText;
     } else {
       return null;
     }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
+import 'package:foodapp/constants/texts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:developer';
 
@@ -74,8 +75,8 @@ class _LoginViewState extends State<LoginView> {
             ),
             const SizedBox(height: 40),
 
-            // Welcome back! 歡迎回來
-            const Text("Welcome Back!",
+            // Welcome back! 
+            const Text(welcomeBack,
                 style: TextStyle(
                   fontSize: 35,
                   fontWeight: FontWeight.w400,
@@ -99,7 +100,7 @@ class _LoginViewState extends State<LoginView> {
                   obscureText: false,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Email",
+                    hintText: email,
                     contentPadding: EdgeInsets.only(left: 20.0),
                   ),
                   enableSuggestions: false,
@@ -126,7 +127,7 @@ class _LoginViewState extends State<LoginView> {
                   obscureText: true,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Password",
+                    hintText: password,
                     contentPadding: EdgeInsets.only(left: 20.0),
                   ),
                   enableSuggestions: false,
@@ -193,7 +194,7 @@ class _LoginViewState extends State<LoginView> {
             TextButton(
               onPressed: () {},
               child: const Text(
-                "Forgot Password?",
+                forgotPassword,
               ),
             ),
 
@@ -207,7 +208,7 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Don't have an account?",
+                  dontHaveAccount,
                   style: TextStyle(fontSize: 16),
                 ),
                 const SizedBox(
@@ -215,7 +216,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 GestureDetector(
                   child: const Text(
-                    "Register here.",
+                    registerHere,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.blue,

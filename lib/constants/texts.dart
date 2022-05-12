@@ -1,1 +1,16 @@
 const String verifyEmailText = "Please verify your email below so that you can start using Flash Eats!";
+const String registerText = "Thanks for Registering!";
+const String verifyEmail = "Verify Email";
+const String termsLink = "https://www.google.com";
+const String signUpHere = "Sign up here.";
+const String firstName = "First Name";
+const String lastName = "Last Name";
+const String email = "Email";
+const String password = "Password";
+const String confirmPassword = "Confirm Password";
+const String validPasswordText = "Please enter valid password (at least 1 uppercase, 1 lowercase, 1 number)";
+const String enterPasswordText = "Please enter password";
+const String welcomeBack = "Welcome Back!";
+const String forgotPassword = "Forgot Password?";
+const String dontHaveAccount = "Don't have an account?";
+const String registerHere = "Register here.";

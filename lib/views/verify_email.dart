@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
@@ -45,7 +43,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 65),
             child: Text(
-              "Thanks for Registering!",
+              registerText,
               style: TextStyle(
                 fontSize: 42,
                 fontWeight: FontWeight.bold,
@@ -82,7 +80,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 await user?.sendEmailVerification();
               },
               child: const Text(
-                "Verify Email",
+                verifyEmail,
                 style: TextStyle(
                   fontSize: 16,
                 ),
@@ -105,6 +103,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       timer.cancel();
       Navigator.of(context)
           .pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
-    } 
+    }
   }
 }
