@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,25 +10,61 @@ import 'firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized;
-  runApp(
-    MaterialApp(
-      title: "Yummy Eats App",
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(),
-      routes: {
-        loginRoute: (context) => const LoginView(),
-        deliveryRoute:(context) => const DeliveryView(),
-        registerRoute: (context) => const RegisterView(),
-        verifyEmailRoute: (context) => const VerifyEmailView(),
-      },
-    )
-  );
+  runApp(MaterialApp(
+    title: "Yummy Eats App",
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: const HomePage(),
+    routes: {
+      loginRoute: (context) => const LoginView(),
+      deliveryRoute: (context) => const DeliveryView(),
+      registerRoute: (context) => const RegisterView(),
+      verifyEmailRoute: (context) => const VerifyEmailView(),
+    },
+  ));
 }
 
+// class HomePage extends StatefulWidget {
+//   const HomePage({ Key? key }) : super(key: key);
+
+//   @override
+//   State<HomePage> createState() => _HomePageState();
+// }
+
+// class _HomePageState extends State<HomePage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//       future: Firebase.initializeApp(
+//         options: DefaultFirebaseOptions.currentPlatform,
+//       ),
+//       builder: (context, snapshot) {
+//         switch (snapshot.connectionState) {
+//           case ConnectionState.done:
+//             FirebaseAuth.instance.authStateChanges().listen(
+//               (User? user) {
+//                 if (user != null) {
+//                   if (user.emailVerified) {
+//                     Navigator.of(context).pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
+//                   } else {
+//                     Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
+//                   }
+//                 } else {
+//                   Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
+//                 }
+//               },
+//             );
+//           default:
+//             return const CircularProgressIndicator();
+//         }
+//       },
+//     );
+//   }
+// }
+
 class HomePage extends StatelessWidget {
-  const HomePage({ Key? key }) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +74,26 @@ class HomePage extends StatelessWidget {
       ),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
-          case ConnectionState.done: 
+          case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
+            try {
+              user?.reload();
             if (user != null) {
-              return const DeliveryView();
+              if (user.emailVerified) {
+                return const DeliveryView();
+              } else {
+                return const VerifyEmailView();
+              }
             } else {
               return const LoginView();
             }
-          default: 
+            } catch (e) {
+              return const LoginView();
+            }
+          default:
             return const CircularProgressIndicator();
-        } 
+        }
       },
-  
     );
   }
 }
