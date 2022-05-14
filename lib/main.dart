@@ -25,44 +25,6 @@ void main() {
   ));
 }
 
-// class HomePage extends StatefulWidget {
-//   const HomePage({ Key? key }) : super(key: key);
-
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       future: Firebase.initializeApp(
-//         options: DefaultFirebaseOptions.currentPlatform,
-//       ),
-//       builder: (context, snapshot) {
-//         switch (snapshot.connectionState) {
-//           case ConnectionState.done:
-//             FirebaseAuth.instance.authStateChanges().listen(
-//               (User? user) {
-//                 if (user != null) {
-//                   if (user.emailVerified) {
-//                     Navigator.of(context).pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
-//                   } else {
-//                     Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
-//                   }
-//                 } else {
-//                   Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
-//                 }
-//               },
-//             );
-//           default:
-//             return const CircularProgressIndicator();
-//         }
-//       },
-//     );
-//   }
-// }
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 

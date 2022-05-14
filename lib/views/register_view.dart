@@ -206,30 +206,21 @@ class _RegisterViewState extends State<RegisterView> {
               ),
               onPressed: () async {
                 try {
-                  // verify password the same
-                  final password = _password.text;
-                  final passwordConfirmation = _passwordConfirmation.text;
-                  if (validatePassword(password, passwordConfirmation) ==
-                      null) {
-                    await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
                             email: _email.text, password: _password.text);
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: _email.text, password: _password.text);
                     Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
-                  } else {
-                    setState(() {
-                      _errorMessage =
-                          validatePassword(password, passwordConfirmation)
-                              .toString();
-                    });
-                  }
                 } on FirebaseAuthException catch (e) {
-                  if (e.code == 'invalid-email') {
-                    setState(() {
-                      _errorMessage = "Invalid Email";
-                    });
-                  }
+                  setState(() {
+                    _errorMessage = e.code;
+                  });
+                  // if (e.code == 'invalid-email') {
+                  //   setState(() {
+                  //     _errorMessage = e.code;
+                  //   });
+                  // }
                 }
               },
               child: const Text(
@@ -294,18 +285,5 @@ class _RegisterViewState extends State<RegisterView> {
         ),
       ),
     );
-  }
-}
-
-String? validatePassword(String pass1, String pass2) {
-  RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,20}$');
-  if (pass1.isEmpty || pass2.isEmpty) {
-    return enterPasswordText;
-  } else {
-    if (!regex.hasMatch(pass1) && (pass1 == pass2)) {
-      return validPasswordText;
-    } else {
-      return null;
-    }
   }
 }
