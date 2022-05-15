@@ -1,9 +1,9 @@
-import 'dart:developer';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
+import 'package:foodapp/services/auth/auth_exceptions.dart';
+import 'package:foodapp/services/auth/auth_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RegisterView extends StatefulWidget {
@@ -17,36 +17,30 @@ class _RegisterViewState extends State<RegisterView> {
   // only for dummy purposes (link isn't real terms and conditions)
   final Uri _url = Uri.parse(termsLink);
   String _errorMessage = '';
-  late final TextEditingController _firstName;
-  late final TextEditingController _lastName;
+  late final TextEditingController _displayName;
   late final TextEditingController _email;
   late final TextEditingController _password;
-  late final TextEditingController _passwordConfirmation;
 
   @override
   void initState() {
-    _firstName = TextEditingController();
-    _lastName = TextEditingController();
+    _displayName = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
-    _passwordConfirmation = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _firstName.dispose();
-    _lastName.dispose();
+    _displayName.dispose();
     _email.dispose();
     _password.dispose();
-    _passwordConfirmation.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +62,7 @@ class _RegisterViewState extends State<RegisterView> {
             // Padding
             const SizedBox(height: 30),
 
-            // First Name
+            // Display Name
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
@@ -79,31 +73,12 @@ class _RegisterViewState extends State<RegisterView> {
                   color: Colors.white,
                 ),
                 child: TextFormField(
-                    controller: _firstName,
+                    controller: _displayName,
                     decoration: const InputDecoration(
-                      hintText: firstName,
-                      prefixIcon: Icon(Icons.account_circle_outlined),
-                    )),
-              ),
-            ),
-
-            // Padding
-            const SizedBox(height: 15),
-
-            // Last Name
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white,
-                ),
-                child: TextFormField(
-                    controller: _lastName,
-                    decoration: const InputDecoration(
-                      hintText: lastName,
+                      hintText: displayName,
+                      hintStyle: TextStyle(
+                        color: Colors.black,
+                      ),
                       prefixIcon: Icon(Icons.account_circle_outlined),
                     )),
               ),
@@ -126,6 +101,9 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _email,
                     decoration: const InputDecoration(
                       hintText: email,
+                      hintStyle: TextStyle(
+                        color: Colors.black,
+                      ),
                       prefixIcon: Icon(Icons.email_outlined),
                     )),
               ),
@@ -149,6 +127,9 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _password,
                     decoration: const InputDecoration(
                       hintText: password,
+                      hintStyle: TextStyle(
+                        color: Colors.black,
+                      ),
                       prefixIcon: Icon(Icons.key_outlined),
                     )),
               ),
@@ -156,26 +137,6 @@ class _RegisterViewState extends State<RegisterView> {
 
             // Padding
             const SizedBox(height: 15),
-
-            // Confirm Password
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.white,
-                ),
-                child: TextFormField(
-                    obscureText: true,
-                    controller: _passwordConfirmation,
-                    decoration: const InputDecoration(
-                      hintText: confirmPassword,
-                      prefixIcon: Icon(Icons.key_outlined),
-                    )),
-              ),
-            ),
 
             // Padding
             const SizedBox(height: 20),
@@ -206,21 +167,18 @@ class _RegisterViewState extends State<RegisterView> {
               ),
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: _email.text, password: _password.text);
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: _email.text, password: _password.text);
+                  AuthService.firebase().createUser(email: _email.text, password: _password.text);
+                  AuthService.firebase().logIn(email: _email.text, password: _password.text);
+                  AuthService.firebase().updateDisplayName(name: _displayName.text);
                     Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
-                } on FirebaseAuthException catch (e) {
-                  setState(() {
-                    _errorMessage = e.code;
-                  });
-                  // if (e.code == 'invalid-email') {
-                  //   setState(() {
-                  //     _errorMessage = e.code;
-                  //   });
-                  // }
+                } on WeakPasswordAuthException {
+                  updateErrorMessage("Weak Password");
+                } on EmailAlreadyInUseAuthException {
+                  updateErrorMessage("Email Already In Use");
+                } on InvalidEmailAuthException {
+                  updateErrorMessage("Invalid Email");
+                } on GenericAuthException {
+                  updateErrorMessage("Register Error");
                 }
               },
               child: const Text(
@@ -285,5 +243,10 @@ class _RegisterViewState extends State<RegisterView> {
         ),
       ),
     );
+  }
+  updateErrorMessage(String error) {
+    setState(() {
+      _errorMessage = error;
+    });
   }
 }

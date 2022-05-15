@@ -20,4 +20,8 @@ abstract class AuthProvider {
   Future<void> sendEmailVerification();
 
   Future<void> initialize();
+
+  Future<void> updateDisplayName({
+    required String name,
+  });
 }

@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
+import 'package:foodapp/services/auth/auth_exceptions.dart';
+import 'package:foodapp/services/auth/auth_services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:developer';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -35,50 +35,26 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            // yummy delivery title
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "FLASH",
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 30,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  "EATS",
-                  style: GoogleFonts.bebasNeue(
-                    fontSize: 30,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
+
+            SizedBox(
+              height: 100,
+              width: 200,
+              child: Image.asset("assets/images/kuai_logo.jpg"),
             ),
 
-            // Padding
+             // Padding
             const SizedBox(
-              height: 30.0,
+              height: 200,
             ),
 
-            // picture
-            const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/delivery.jpg'),
-              radius: 120,
-            ),
-            const SizedBox(height: 40),
-
-            // Welcome back! 
+            // Welcome back!
             const Text(welcomeBack,
                 style: TextStyle(
-                  fontSize: 35,
+                  fontSize: 45,
                   fontWeight: FontWeight.w400,
                 )),
 
@@ -94,6 +70,7 @@ class _LoginViewState extends State<LoginView> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black),
                 ),
                 child: TextFormField(
                   controller: _email,
@@ -101,6 +78,9 @@ class _LoginViewState extends State<LoginView> {
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: email,
+                    hintStyle: TextStyle(
+                      color: Colors.black,
+                    ),
                     contentPadding: EdgeInsets.only(left: 20.0),
                   ),
                   enableSuggestions: false,
@@ -114,20 +94,24 @@ class _LoginViewState extends State<LoginView> {
               height: 15,
             ),
 
-            // password
+            // email
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black),
                 ),
                 child: TextFormField(
                   controller: _password,
-                  obscureText: true,
+                  obscureText: false,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: password,
+                    hintStyle: TextStyle(
+                      color: Colors.black,
+                    ),
                     contentPadding: EdgeInsets.only(left: 20.0),
                   ),
                   enableSuggestions: false,
@@ -148,11 +132,6 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
-            // Padding
-            const SizedBox(
-              height: 40,
-            ),
-
             //sign in button
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -165,26 +144,28 @@ class _LoginViewState extends State<LoginView> {
                   final email = _email.text;
                   final password = _password.text;
                   try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    final currentUser = FirebaseAuth.instance.currentUser;
+                    AuthService.firebase()
+                        .logIn(email: email, password: password);
+                    final currentUser = AuthService.firebase().currentUser;
                     if (currentUser != null) {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           deliveryRoute, (route) => false);
                     }
-                  } on FirebaseAuthException catch (e) {
-                    setState(() {
-                      _errorMessage = validate(e.code);
-                    });
-                    log(e.code);
+                  } on UserNotFoundAuthException {
+                    updateErrorMessage("User Not Found");
+                  } on WrongPasswordAuthException {
+                    updateErrorMessage("Wrong Password");
+                  } on InvalidEmailAuthException {
+                    updateErrorMessage("Invalid Email");
+                  } on GenericAuthException {
+                    updateErrorMessage("Authentication Error");
                   }
                 },
                 child: const Text(
                   "Sign In",
                   style: TextStyle(
                     color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -193,14 +174,17 @@ class _LoginViewState extends State<LoginView> {
             //Forgot Password?
             TextButton(
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 forgotPassword,
+                style: TextStyle(
+                  color: Colors.grey[900],
+                ),
               ),
             ),
 
             // Padding
             const SizedBox(
-              height: 50,
+              height: 100,
             ),
 
             //Not a member? Register here!
@@ -234,16 +218,10 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-}
 
-String validate(String value) {
-  if (value == "invalid-email") {
-    return "Please enter valid email address";
-  } else if (value == '') {
-    return "Fields can't be empty";
-  } else if (value == 'wrong-password') {
-    return "Password can't be empty";
-  } else {
-    return "User Not Found";
+  updateErrorMessage(String error) {
+    setState(() {
+      _errorMessage = error;
+    });
   }
 }

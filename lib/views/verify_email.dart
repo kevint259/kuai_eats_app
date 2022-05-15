@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
+import 'package:foodapp/services/auth/auth_services.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -76,8 +76,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ElevatedButton(
               onPressed: () async {
                 // verifies user's email
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                AuthService.firebase().sendEmailVerification();
               },
               child: const Text(
                 verifyEmail,
@@ -97,9 +96,9 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   }
 
   Future<void> checkEmailVerified() async {
-    final user = FirebaseAuth.instance.currentUser;
-    await user?.reload();
-    if (user?.emailVerified ?? false) {
+    final user = AuthService.firebase().currentUser;
+    user?.reload;
+    if (user?.isEmailVerified ?? false) {
       timer.cancel();
       Navigator.of(context)
           .pushNamedAndRemoveUntil(deliveryRoute, (route) => false);

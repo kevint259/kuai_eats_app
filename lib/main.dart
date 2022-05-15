@@ -1,17 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
+import 'package:foodapp/services/auth/auth_services.dart';
 import 'package:foodapp/views/home_delivery.dart';
 import 'package:foodapp/views/login_view.dart';
 import 'package:foodapp/views/register_view.dart';
 import 'package:foodapp/views/verify_email.dart';
-import 'firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized;
   runApp(MaterialApp(
-    title: "Yummy Eats App",
+    title: "Kuai Eats App",
     theme: ThemeData(
       primarySwatch: Colors.blue,
     ),
@@ -31,17 +29,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
+            final user = AuthService.firebase().currentUser;
             try {
-              user?.reload();
+              user?.reload;
             if (user != null) {
-              if (user.emailVerified) {
+              if (user.isEmailVerified) {
                 return const DeliveryView();
               } else {
                 return const VerifyEmailView();
