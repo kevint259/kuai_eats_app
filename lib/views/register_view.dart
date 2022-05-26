@@ -100,7 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
                 child: TextFormField(
                     controller: _email,
                     decoration: const InputDecoration(
-                      hintText: email,
+                      hintText: emailRegister,
                       hintStyle: TextStyle(
                         color: Colors.black,
                       ),
@@ -126,7 +126,7 @@ class _RegisterViewState extends State<RegisterView> {
                     obscureText: true,
                     controller: _password,
                     decoration: const InputDecoration(
-                      hintText: password,
+                      hintText: passwordRegister,
                       hintStyle: TextStyle(
                         color: Colors.black,
                       ),
@@ -168,7 +168,6 @@ class _RegisterViewState extends State<RegisterView> {
               onPressed: () async {
                 try {
                   AuthService.firebase().createUser(email: _email.text, password: _password.text);
-                  AuthService.firebase().logIn(email: _email.text, password: _password.text);
                   AuthService.firebase().updateDisplayName(name: _displayName.text);
                     Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
                 } on WeakPasswordAuthException {

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:foodapp/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
