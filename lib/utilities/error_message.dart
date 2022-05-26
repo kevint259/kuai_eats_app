@@ -8,15 +8,26 @@ Future<void> showLoginErrorDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Login Failed"),
-          content: Text(text),
+          title: const Text(
+            "Login Failed",
+            textAlign: TextAlign.center,
+          ),
+          content: Text(
+            text,
+            textAlign: TextAlign.center,
+          ),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("OK"))
+                child: const Text("OK",
+                style: TextStyle(fontSize: 18),),
+                )
           ],
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          actionsAlignment: MainAxisAlignment.center,
         );
       });
 }

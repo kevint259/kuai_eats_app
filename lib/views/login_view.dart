@@ -3,8 +3,11 @@ import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
 import 'package:foodapp/services/auth/auth_services.dart';
+import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
+import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/utilities/error_message.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -98,7 +101,8 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   enableSuggestions: false,
                   autocorrect: false,
-                  validator: EmailValidator(errorText: "Enter a valid email address"),
+                  validator:
+                      EmailValidator(errorText: "Enter a valid email address"),
                 ),
               ),
 
@@ -138,50 +142,51 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   enableSuggestions: false,
                   autocorrect: false,
-                  validator: MinLengthValidator(6, errorText: "At least 6 characters"),
+                  validator:
+                      MinLengthValidator(6, errorText: "At least 6 characters"),
                 ),
               ),
 
               // Padding
               const SizedBox(
-                height: 50,
+                height: 20,
               ),
 
               //sign in button
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 12.0,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                  shadowColor: Colors.blue[400],
+                  primary: Colors.blue[700],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  textStyle: const TextStyle(
+                    fontSize: 16.0,
+                  ),
                 ),
-                child: TextButton(
-                  onPressed: () async {
-                    final email = _email.text;
-                    final password = _password.text;
-                    try {
-                      AuthService.firebase()
-                          .logIn(email: email, password: password);
-                      final currentUser = AuthService.firebase().currentUser;
-                      if (currentUser != null) {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            deliveryRoute, (route) => false);
-                      }
-                    } on UserNotFoundAuthException {
-                      throw UserNotFoundAuthException();
-                    } on WrongPasswordAuthException {
-                      throw WrongPasswordAuthException();
-                    } on InvalidEmailAuthException {
-                      throw InvalidEmailAuthException();
-                    } on GenericAuthException {
-                      throw GenericAuthException();
-                    }
-                  },
-                  child: const Text(
-                    "Sign In",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  try {
+                    context.read<AuthBloc>().add(AuthEventLogIn(email, password));
+
+                  } on UserNotFoundAuthException {
+                    await showLoginErrorDialog(context, "User Not Found");
+                  } on WrongPasswordAuthException {
+                    await showLoginErrorDialog(context, "Wrong Password");
+                  } on InvalidEmailAuthException {
+                    await showLoginErrorDialog(context, "Invalid Email");
+                  } on GenericAuthException {
+                    await showLoginErrorDialog(context, "Login Error");
+                  }
+                },
+                child: const Text(
+                  "Sign In",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -234,5 +239,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-
 }
