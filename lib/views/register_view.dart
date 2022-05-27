@@ -21,8 +21,6 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
-
-
   @override
   void initState() {
     _displayName = TextEditingController();
@@ -42,6 +40,24 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.black,
+        ),
+        title: const Text(
+          "Register",
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+      ),),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -149,7 +165,7 @@ class _RegisterViewState extends State<RegisterView> {
               child: Text(
                 _errorMessage,
                 style: const TextStyle(
-                    color: Colors.red, 
+                    color: Colors.red,
                     fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
@@ -162,16 +178,21 @@ class _RegisterViewState extends State<RegisterView> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 12.0,
-                padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 140, vertical: 10),
                 shadowColor: Colors.blue[400],
                 primary: Colors.blue[700],
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () async {
                 try {
-                  AuthService.firebase().createUser(email: _email.text, password: _password.text);
-                  AuthService.firebase().updateDisplayName(name: _displayName.text);
-                    Navigator.of(context).pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
+                  AuthService.firebase()
+                      .createUser(email: _email.text, password: _password.text);
+                  AuthService.firebase()
+                      .updateDisplayName(name: _displayName.text);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute, (route) => false);
                 } on WeakPasswordAuthException {
                   updateErrorMessage("Weak Password");
                 } on EmailAlreadyInUseAuthException {
@@ -189,7 +210,6 @@ class _RegisterViewState extends State<RegisterView> {
                   fontSize: 16,
                 ),
               ),
-              
             ),
 
             // Padding
@@ -245,6 +265,7 @@ class _RegisterViewState extends State<RegisterView> {
       ),
     );
   }
+
   updateErrorMessage(String error) {
     setState(() {
       _errorMessage = error;

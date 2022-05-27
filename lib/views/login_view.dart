@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
-import 'package:foodapp/services/auth/auth_services.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/utilities/error_message.dart';
+import 'package:foodapp/views/register_view.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -116,7 +116,7 @@ class _LoginViewState extends State<LoginView> {
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextFormField(
                   controller: _password,
-                  obscureText: false,
+                  obscureText: true,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Colors.black),
@@ -171,7 +171,6 @@ class _LoginViewState extends State<LoginView> {
                   final password = _password.text;
                   try {
                     context.read<AuthBloc>().add(AuthEventLogIn(email, password));
-
                   } on UserNotFoundAuthException {
                     await showLoginErrorDialog(context, "User Not Found");
                   } on WrongPasswordAuthException {
@@ -227,8 +226,7 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          registerRoute, (route) => false);
+                      Navigator.of(context).pushNamed(registerRoute);
                     },
                   )
                 ],
