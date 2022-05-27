@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
@@ -21,12 +20,6 @@ void main() {
       create: (context) => AuthBloc(FirebaseAuthProvider()),
       child: const HomePage(),
     ),
-    routes: {
-      loginRoute: (context) => const LoginView(),
-      deliveryRoute: (context) => const DeliveryView(),
-      registerRoute: (context) => const RegisterView(),
-      verifyEmailRoute: (context) => const VerifyEmailView(),
-    },
   ));
 }
 
@@ -44,6 +37,8 @@ class HomePage extends StatelessWidget {
         return const VerifyEmailView();
       } else if (state is AuthStateLoggedOut) {
         return const LoginView();
+      } else if (state is AuthStateRegistering) {
+        return const RegisterView();
       } else {
         return const Scaffold(
           body: CircularProgressIndicator()

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:foodapp/constants/routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_services.dart';
+import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
+import 'package:foodapp/services/auth/bloc/auth_event.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -12,21 +14,6 @@ class VerifyEmailView extends StatefulWidget {
 }
 
 class _VerifyEmailViewState extends State<VerifyEmailView> {
-  late final Timer timer;
-
-  @override
-  void initState() {
-    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      checkEmailVerified();
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +61,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           ),
 
           ElevatedButton(
-              onPressed: () async {
-                // verifies user's email
-                AuthService.firebase().sendEmailVerification();
+              onPressed: ()  {
+                context.read<AuthBloc>().add(const AuthEventSendEmailVerification());
               },
               child: const Text(
                 verifyEmail,
@@ -95,13 +81,4 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
     );
   }
 
-  Future<void> checkEmailVerified() async {
-    final user = AuthService.firebase().currentUser;
-    user?.reload;
-    if (user?.isEmailVerified ?? false) {
-      timer.cancel();
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(deliveryRoute, (route) => false);
-    }
-  }
 }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
-import 'package:foodapp/utilities/error_message.dart';
-import 'package:foodapp/views/register_view.dart';
+import 'package:foodapp/utilities/dialogs/error_dialog.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,136 +37,136 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Form(
-          autovalidateMode: AutovalidateMode.always,
-          key: _formKey,
-          child: Column(
-            children: [
-              // Logo
-              SizedBox(
-                height: 100,
-                width: 200,
-                child: Image.asset(kuaiLogo),
-              ),
-
-              // Padding
-              const SizedBox(
-                height: 150,
-              ),
-
-              // Welcome back!
-              const Text(welcomeBack,
-                  style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.w400,
-                  )),
-
-              // Padding
-              const SizedBox(
-                height: 20,
-              ),
-
-              // email
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextFormField(
-                  controller: _email,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    hintText: emailLogin,
-                    hintStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    contentPadding: const EdgeInsets.only(left: 20.0),
-                  ),
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  validator:
-                      EmailValidator(errorText: "Enter a valid email address"),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthStateLoggedOut) {
+          if (state.exception is UserNotFoundAuthException) {
+            await showErrorDialog(context, "User Not Found");
+          } else if (state.exception is WrongPasswordAuthException) {
+            await showErrorDialog(context, "Wrong Credentials");
+          } else if (state.exception is InvalidEmailAuthException) {
+            await showErrorDialog(context, "Invalid Email");
+          } else {
+            await showErrorDialog(context, "Login Error");
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Form(
+            autovalidateMode: AutovalidateMode.always,
+            key: _formKey,
+            child: Column(
+              children: [
+                // Logo
+                SizedBox(
+                  height: 100,
+                  width: 200,
+                  child: Image.asset(kuaiLogo),
                 ),
-              ),
 
-              // Padding
-              const SizedBox(
-                height: 15,
-              ),
-
-              // password
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextFormField(
-                  controller: _password,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    hintText: passwordLogin,
-                    hintStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    contentPadding: const EdgeInsets.only(left: 20.0),
-                  ),
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  validator:
-                      MinLengthValidator(6, errorText: "At least 6 characters"),
+                // Padding
+                const SizedBox(
+                  height: 150,
                 ),
-              ),
 
-              // Padding
-              const SizedBox(
-                height: 20,
-              ),
+                // Welcome back!
+                const Text(welcomeBack,
+                    style: TextStyle(
+                      fontSize: 45,
+                      fontWeight: FontWeight.w400,
+                    )),
 
-              //sign in button
-              BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) async {
-                  if (state is AuthStateLoggedOut) {
-                    if (state.exception is UserNotFoundAuthException) {
-                      await showLoginErrorDialog(context, "User Not Found");
-                    } else if (state.exception is WrongPasswordAuthException) {
-                      await showLoginErrorDialog(context, "Wrong Credentials");
-                    } else if (state.exception is InvalidEmailAuthException) {
-                      await showLoginErrorDialog(context, "Invalid Email");
-                    } else {
-                      await showLoginErrorDialog(context, "Login Error");
-                    }
-                  }
-                },
-                child: ElevatedButton(
+                // Padding
+                const SizedBox(
+                  height: 20,
+                ),
+
+                // email
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    controller: _email,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: emailLogin,
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      contentPadding: const EdgeInsets.only(left: 20.0),
+                    ),
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    validator: EmailValidator(
+                        errorText: "Enter a valid email address"),
+                  ),
+                ),
+
+                // Padding
+                const SizedBox(
+                  height: 15,
+                ),
+
+                // password
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    controller: _password,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: passwordLogin,
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      contentPadding: const EdgeInsets.only(left: 20.0),
+                    ),
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    validator: MinLengthValidator(6,
+                        errorText: "At least 6 characters"),
+                  ),
+                ),
+
+                // Padding
+                const SizedBox(
+                  height: 20,
+                ),
+
+                //sign in button
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 12.0,
                     padding: const EdgeInsets.symmetric(
@@ -185,9 +183,9 @@ class _LoginViewState extends State<LoginView> {
                     final email = _email.text;
                     final password = _password.text;
                     context.read<AuthBloc>().add(AuthEventLogIn(
-                            email,
-                            password,
-                          ));
+                          email,
+                          password,
+                        ));
                   },
                   child: const Text(
                     "Sign In",
@@ -197,50 +195,50 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-              ),
 
-              //Forgot Password?
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  forgotPassword,
-                  style: TextStyle(
-                    color: Colors.grey[900],
+                //Forgot Password?
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    forgotPassword,
+                    style: TextStyle(
+                      color: Colors.grey[900],
+                    ),
                   ),
                 ),
-              ),
 
-              // Padding
-              const SizedBox(
-                height: 100,
-              ),
+                // Padding
+                const SizedBox(
+                  height: 100,
+                ),
 
-              //Not a member? Register here!
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    dontHaveAccount,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(
-                    width: 3,
-                  ),
-                  GestureDetector(
-                    child: const Text(
-                      registerHere,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                      ),
+                //Not a member? Register here!
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      dontHaveAccount,
+                      style: TextStyle(fontSize: 16),
                     ),
-                    onTap: () {
-                      Navigator.of(context).pushNamed(registerRoute);
-                    },
-                  )
-                ],
-              )
-            ],
+                    const SizedBox(
+                      width: 3,
+                    ),
+                    GestureDetector(
+                      child: const Text(
+                        registerHere,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      onTap: () {
+                        context.read<AuthBloc>().add(const AuthEventShouldRegister());
+                      },
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

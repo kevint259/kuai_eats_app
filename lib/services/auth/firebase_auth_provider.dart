@@ -8,12 +8,13 @@ import 'package:foodapp/services/auth/auth_user.dart';
 class FirebaseAuthProvider implements AuthProvider {
   @override
   Future<AuthUser> createUser(
-      {required String email, required String password}) async {
+      {required String email, required String password,}) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       final user = currentUser;
       if (user != null) {
+        
         return user;
       } else {
         throw UserNotLoggedInAuthException();
