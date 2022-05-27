@@ -4,6 +4,7 @@ import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
+import 'package:foodapp/services/auth/bloc/auth_state.dart';
 import 'package:foodapp/utilities/error_message.dart';
 import 'package:foodapp/views/register_view.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -153,39 +154,47 @@ class _LoginViewState extends State<LoginView> {
               ),
 
               //sign in button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 12.0,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                  shadowColor: Colors.blue[400],
-                  primary: Colors.blue[700],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  textStyle: const TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  try {
-                    context.read<AuthBloc>().add(AuthEventLogIn(email, password));
-                  } on UserNotFoundAuthException {
-                    await showLoginErrorDialog(context, "User Not Found");
-                  } on WrongPasswordAuthException {
-                    await showLoginErrorDialog(context, "Wrong Password");
-                  } on InvalidEmailAuthException {
-                    await showLoginErrorDialog(context, "Invalid Email");
-                  } on GenericAuthException {
-                    await showLoginErrorDialog(context, "Login Error");
+              BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) async {
+                  if (state is AuthStateLoggedOut) {
+                    if (state.exception is UserNotFoundAuthException) {
+                      await showLoginErrorDialog(context, "User Not Found");
+                    } else if (state.exception is WrongPasswordAuthException) {
+                      await showLoginErrorDialog(context, "Wrong Credentials");
+                    } else if (state.exception is InvalidEmailAuthException) {
+                      await showLoginErrorDialog(context, "Invalid Email");
+                    } else {
+                      await showLoginErrorDialog(context, "Login Error");
+                    }
                   }
                 },
-                child: const Text(
-                  "Sign In",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 12.0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12),
+                    shadowColor: Colors.blue[400],
+                    primary: Colors.blue[700],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    textStyle: const TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
+                    context.read<AuthBloc>().add(AuthEventLogIn(
+                            email,
+                            password,
+                          ));
+                  },
+                  child: const Text(
+                    "Sign In",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
