@@ -1,4 +1,4 @@
-# Flash Eats Food Delivery App
+# Kuai Eats Food Delivery App
 
 A new Flutter project.
 
