@@ -19,11 +19,12 @@ abstract class AuthProvider {
 
   Future<void> sendEmailVerification();
 
-  Future<void> resetPassword();
+  // Future<void> resetPassword();
 
   Future<void> initialize();
 
   Future<void> updateDisplayName({
     required String name,
   });
+
 }

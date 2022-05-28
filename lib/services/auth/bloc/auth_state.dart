@@ -17,9 +17,12 @@ class AuthStateRegistering extends AuthState {
 }
 
 class AuthStateLoggedIn extends AuthState {
-  final bool isEmailVerified;
   final AuthUser user;
-  const AuthStateLoggedIn(this.user, this.isEmailVerified);
+  const AuthStateLoggedIn(this.user);
+}
+
+class AuthStateVerifyEmail extends AuthState {
+  const AuthStateVerifyEmail();
 }
 
 class AuthStateLoggedOut extends AuthState with EquatableMixin {

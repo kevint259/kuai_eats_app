@@ -9,7 +9,6 @@ class AuthEventInitialize extends AuthEvent {
   const AuthEventInitialize();
 }
 
-
 class AuthEventLogIn extends AuthEvent {
   final String email;
   final String password;
@@ -33,6 +32,10 @@ class AuthEventLogOut extends AuthEvent {
 
 class AuthEventGoBack extends AuthEvent {
   const AuthEventGoBack();
+}
+
+class AuthEventVerifyEmail extends AuthEvent {
+  const AuthEventVerifyEmail();
 }
 
 

@@ -8,6 +8,7 @@ import 'package:foodapp/services/auth/firebase_auth_provider.dart';
 import 'package:foodapp/views/home_delivery.dart';
 import 'package:foodapp/views/login_view.dart';
 import 'package:foodapp/views/register_view.dart';
+import 'package:foodapp/views/verify_email.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized;
@@ -25,6 +26,7 @@ void main() {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         deliveryRoute: (context) => const DeliveryView(),
+        verifyEmailRoute:(context) => const VerifyEmailView(),
       },
     ),
   );
@@ -44,8 +46,13 @@ class HomePage extends StatelessWidget {
           return const LoginView();
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
-        } else {
-          return const CircularProgressIndicator();
+        } else if (state is AuthStateVerifyEmail) {
+          return const VerifyEmailView();
+        }
+        else {
+          return const Scaffold(
+            body: CircularProgressIndicator(),
+          );
         }
       },
     );

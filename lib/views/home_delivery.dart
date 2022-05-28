@@ -6,7 +6,6 @@ import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
 import 'package:foodapp/utilities/dialogs/error_dialog.dart';
-import 'package:foodapp/utilities/dialogs/verify_email_dialog.dart';
 
 class DeliveryView extends StatefulWidget {
   const DeliveryView({Key? key}) : super(key: key);
@@ -22,12 +21,7 @@ class _DeliveryViewState extends State<DeliveryView> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
-        if (state is AuthStateLoggedIn) {
-          if (!state.isEmailVerified) {
-            await showEmailVerificationDialog(
-                context, "Remember to verify email!");
-          }
-        } else if (state is AuthStateLoggedOut) {
+        if (state is AuthStateLoggedOut) {
           if (state.exception is UserNotLoggedInAuthException) {
             await showErrorDialog(context, "User Not Logged in");
           }
@@ -46,13 +40,6 @@ class _DeliveryViewState extends State<DeliveryView> {
                 style: const TextStyle(
                   fontSize: 30,
                 ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/albert.jpg'),
-                radius: 100,
               ),
               const SizedBox(height: 80),
               ElevatedButton(

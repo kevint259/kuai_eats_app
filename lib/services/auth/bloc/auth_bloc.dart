@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodapp/services/auth/auth_provider.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
@@ -18,6 +17,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthStateRegistering(null));
     },);
 
+    on<AuthEventVerifyEmail>((event, emit) async {
+      final user = provider.currentUser;
+      await user?.reload;
+      if (user != null) {
+        if (user.isEmailVerified) {
+          emit(AuthStateLoggedIn(user));
+        } else {
+          emit(state);
+        }
+      } else {
+        emit(const AuthStateLoggedOut(exception: null));
+      }
+    },);
+
     // register
     on<AuthEventRegister>(
       (event, emit) async {
@@ -30,9 +43,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await provider.sendEmailVerification();
           final user = provider.currentUser;
           if (user == null) {
-            emit(state);
+            emit(const AuthStateVerifyEmail());
           } else {
-            emit(AuthStateLoggedIn(user, user.isEmailVerified));
+            if (user.isEmailVerified) {
+              emit(AuthStateLoggedIn(user));
+            } else {
+              emit(const AuthStateVerifyEmail());
+            }
           }
         } on Exception catch (e) {
           log(e.toString());
@@ -48,7 +65,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user == null) {
         emit(const AuthStateLoggedOut(exception: null));
       } else {
-        emit(AuthStateLoggedIn(user, user.isEmailVerified));
+        if (user.isEmailVerified) {
+          emit(AuthStateLoggedIn(user));
+        } else {
+          emit(const AuthStateVerifyEmail());
+        }
       }
     });
 
@@ -62,7 +83,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             email: email,
             password: password,
           );
-          emit(AuthStateLoggedIn(user, user.isEmailVerified));
+          if (user.isEmailVerified) {
+            emit(AuthStateLoggedIn(user));
+          } else {
+            emit(const AuthStateVerifyEmail());
+          }
         } on Exception catch (e) {
           log(e.toString());
           emit(AuthStateLoggedOut(exception: e));
