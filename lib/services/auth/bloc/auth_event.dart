@@ -9,9 +9,6 @@ class AuthEventInitialize extends AuthEvent {
   const AuthEventInitialize();
 }
 
-class AuthEventSendEmailVerification extends AuthEvent {
-  const AuthEventSendEmailVerification();
-}
 
 class AuthEventLogIn extends AuthEvent {
   final String email;
@@ -32,6 +29,10 @@ class AuthEventShouldRegister extends AuthEvent {
 
 class AuthEventLogOut extends AuthEvent {
   const AuthEventLogOut();
+}
+
+class AuthEventGoBack extends AuthEvent {
+  const AuthEventGoBack();
 }
 
 

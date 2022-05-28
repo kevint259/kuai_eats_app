@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 
-Future<void> showErrorDialog(
+Future<void> showEmailVerificationDialog(
   BuildContext context,
   String text,
 ) {
@@ -11,7 +11,7 @@ Future<void> showErrorDialog(
       builder: (context) {
         return AlertDialog(
           title: const Text(
-            "Login Failed",
+            "Reminder",
             textAlign: TextAlign.center,
           ),
           content: Text(

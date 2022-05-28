@@ -14,7 +14,6 @@ class FirebaseAuthProvider implements AuthProvider {
           .createUserWithEmailAndPassword(email: email, password: password);
       final user = currentUser;
       if (user != null) {
-        
         return user;
       } else {
         throw UserNotLoggedInAuthException();
@@ -29,9 +28,7 @@ class FirebaseAuthProvider implements AuthProvider {
       } else {
         throw GenericAuthException();
       }
-    } catch (_) {
-      throw GenericAuthException();
-    }
+    } 
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:foodapp/services/auth/auth_user.dart';
 
@@ -16,20 +17,19 @@ class AuthStateRegistering extends AuthState {
 }
 
 class AuthStateLoggedIn extends AuthState {
+  final bool isEmailVerified;
   final AuthUser user;
-  const AuthStateLoggedIn(this.user);
+  const AuthStateLoggedIn(this.user, this.isEmailVerified);
 }
 
-class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification();
-}
-
-class AuthStateLoggedOut extends AuthState {
+class AuthStateLoggedOut extends AuthState with EquatableMixin {
   final Exception? exception;
   const AuthStateLoggedOut({
     required this.exception,
   });
 
+  @override
+  List<Object?> get props => [exception];
 }
 
 
