@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';

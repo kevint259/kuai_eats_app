@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodapp/constants/texts.dart';
@@ -22,8 +21,9 @@ Future<void> showResetPasswordDialog(
             ),
             content: Column(mainAxisSize: MainAxisSize.min, children: [
               const Text(
-                  "Please specify your email address to receive instructions for resetting it.",
-                  textAlign: TextAlign.center,),
+                "Please specify your email address to receive instructions for resetting it. If an account exists by that email, you will receieve an email.",
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 30),
               TextFormField(
                 controller: _email,

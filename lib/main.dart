@@ -5,10 +5,10 @@ import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
 import 'package:foodapp/services/auth/firebase_auth_provider.dart';
-import 'package:foodapp/views/home_delivery.dart';
-import 'package:foodapp/views/login_view.dart';
-import 'package:foodapp/views/register_view.dart';
-import 'package:foodapp/views/verify_email.dart';
+import 'package:foodapp/views/auth/login_view.dart';
+import 'package:foodapp/views/auth/register_view.dart';
+import 'package:foodapp/views/auth/verify_email.dart';
+import 'package:foodapp/views/home/home_delivery.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized;
