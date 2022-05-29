@@ -7,8 +7,10 @@ import 'package:foodapp/services/auth/auth_user.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
-  Future<AuthUser> createUser(
-      {required String email, required String password,}) async {
+  Future<AuthUser> createUser({
+    required String email,
+    required String password,
+  }) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -28,7 +30,7 @@ class FirebaseAuthProvider implements AuthProvider {
       } else {
         throw GenericAuthException();
       }
-    } 
+    }
   }
 
   @override
@@ -102,6 +104,21 @@ class FirebaseAuthProvider implements AuthProvider {
       await user.updateDisplayName(name);
     } else {
       throw UserNotLoggedInAuthException();
+    }
+  }
+
+  @override
+  Future<void> resetPassword({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        throw UserNotFoundAuthException();
+      } else if (e.code == "invalid-email") {
+        throw InvalidEmailAuthException();
+      }
+    } catch (_) {
+      throw GenericAuthException();
     }
   }
 }

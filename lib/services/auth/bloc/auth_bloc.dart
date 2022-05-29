@@ -9,7 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Back Button
     on<AuthEventGoBack>((event, emit) {
-      emit(const AuthStateLoggedOut(exception: null));
+      emit(const AuthStateLoggedOut(exception: null, forgotPassword: false));
     },);
 
     // should register button
@@ -17,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthStateRegistering(null));
     },);
 
+    // verify email
     on<AuthEventVerifyEmail>((event, emit) async {
       final user = provider.currentUser;
       await user?.reload;
@@ -27,8 +28,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(state);
         }
       } else {
-        emit(const AuthStateLoggedOut(exception: null));
+        emit(const AuthStateLoggedOut(exception: null, forgotPassword: false));
       }
+    },);
+
+    // reset password
+    on<AuthEventResetPassword>((event, emit) async {
+      try {
+        await provider.resetPassword(email: event.email);
+        emit(const AuthStateLoggedOut(exception: null, forgotPassword: false));
+      } on Exception catch (e) {
+        log(e.toString());
+        emit(AuthStateLoggedOut(exception: e, forgotPassword: false));
+      }
+    },);
+
+    // forgot password
+    on<AuthEventForgotPassword>((event, emit) {
+      emit(const AuthStateLoggedOut(exception: null, forgotPassword: true));
     },);
 
     // register
@@ -63,7 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await provider.initialize();
       final user = provider.currentUser;
       if (user == null) {
-        emit(const AuthStateLoggedOut(exception: null));
+        emit(const AuthStateLoggedOut(exception: null, forgotPassword: false));
       } else {
         if (user.isEmailVerified) {
           emit(AuthStateLoggedIn(user));
@@ -90,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           }
         } on Exception catch (e) {
           log(e.toString());
-          emit(AuthStateLoggedOut(exception: e));
+          emit(AuthStateLoggedOut(exception: e, forgotPassword: false));
         }
       },
     );
@@ -99,10 +116,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (event, emit) async {
         try {
           await provider.logOut();
-          emit(const AuthStateLoggedOut(exception: null));
+          emit(const AuthStateLoggedOut(exception: null, forgotPassword: false));
         } on Exception catch (e) {
           log(e.toString());
-          emit(AuthStateLoggedOut(exception: e));
+          emit(AuthStateLoggedOut(exception: e, forgotPassword: false));
         }
       },
     );

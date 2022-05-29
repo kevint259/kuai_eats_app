@@ -11,7 +11,7 @@ Future<void> showErrorDialog(
       builder: (context) {
         return AlertDialog(
           title: const Text(
-            "Login Failed",
+            "Error Occurred",
             textAlign: TextAlign.center,
           ),
           content: Text(

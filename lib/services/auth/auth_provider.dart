@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foodapp/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
-
   Future<AuthUser> createUser({
     required String email,
     required String password,
@@ -19,12 +17,13 @@ abstract class AuthProvider {
 
   Future<void> sendEmailVerification();
 
-  // Future<void> resetPassword();
+  Future<void> resetPassword({
+    required String email,
+  });
 
   Future<void> initialize();
 
   Future<void> updateDisplayName({
     required String name,
   });
-
 }

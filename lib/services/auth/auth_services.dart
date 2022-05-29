@@ -30,5 +30,8 @@ class AuthService implements AuthProvider {
 
   @override
   Future<void> updateDisplayName({required String name}) => provider.updateDisplayName(name: name);
-  
+
+  @override
+  Future<void> resetPassword({required String email}) => provider.resetPassword(email: email);
+
 }

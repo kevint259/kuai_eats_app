@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodapp/constants/routes.dart';
 import 'package:foodapp/constants/texts.dart';
 import 'package:foodapp/services/auth/auth_exceptions.dart';
 import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
@@ -7,7 +6,7 @@ import 'package:foodapp/services/auth/bloc/auth_event.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
 import 'package:foodapp/utilities/dialogs/error_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:foodapp/utilities/dialogs/verify_email_dialog.dart';
+import 'package:foodapp/utilities/dialogs/reset_password_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -47,6 +46,8 @@ class _LoginViewState extends State<LoginView> {
             await showErrorDialog(context, "Invalid Email");
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(context, "Login Error");
+          } else if (state.forgotPassword == true) {
+            await showResetPasswordDialog(context);
           }
         } 
       },
@@ -174,7 +175,9 @@ class _LoginViewState extends State<LoginView> {
 
               //Forgot Password?
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<AuthBloc>().add(const AuthEventForgotPassword());
+                },
                 child: Text(
                   forgotPassword,
                   style: TextStyle(
