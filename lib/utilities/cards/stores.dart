@@ -28,7 +28,7 @@ class StoreCard extends StatelessWidget {
           boxShadow: const [
             BoxShadow(
               offset: Offset(0, 3),
-              blurRadius: 10,
+              blurRadius: 5,
               color: Color(0xFFA9A9A9),
             )
           ]
@@ -40,7 +40,7 @@ class StoreCard extends StatelessWidget {
             Text(title,
             style: GoogleFonts.roboto(
               fontSize: 16,
-              fontWeight: FontWeight.bold, 
+              fontWeight: FontWeight.w500, 
             ),),
     
             const SizedBox(height: 10,),
