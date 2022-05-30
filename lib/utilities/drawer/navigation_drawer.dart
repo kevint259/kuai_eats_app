@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
+import 'package:foodapp/services/auth/bloc/auth_event.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({Key? key}) : super(key: key);
@@ -183,7 +186,9 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                 ),
                 hoverColor: Colors.grey,
-                onTap: () {},
+                onTap: () {
+                  context.read<AuthBloc>().add(const AuthEventLogOut());
+                },
                 horizontalTitleGap: 0,
                 minLeadingWidth: 50,
                 contentPadding:

@@ -6,6 +6,7 @@ import 'package:foodapp/services/auth/bloc/auth_bloc.dart';
 import 'package:foodapp/services/auth/bloc/auth_state.dart';
 import 'package:foodapp/utilities/dialogs/error_dialog.dart';
 import 'package:foodapp/utilities/drawer/navigation_drawer.dart';
+import 'package:foodapp/views/home/body.dart';
 
 class DeliveryView extends StatefulWidget {
   const DeliveryView({Key? key}) : super(key: key);
@@ -31,16 +32,37 @@ class _DeliveryViewState extends State<DeliveryView> {
           drawer: const NavigationDrawerWidget(),
           appBar: AppBar(
             iconTheme: const IconThemeData(color: Colors.black),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.grey[300],
             elevation: 0,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(60),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    hintText: "Food, groceries, drinks, etc",
+                    filled: true,
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             centerTitle: true,
             title: Column(
               children: [
                 Text(
-                  "Delivery to".toUpperCase(),
+                  "Home".toUpperCase(),
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.blueAccent,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -66,10 +88,10 @@ class _DeliveryViewState extends State<DeliveryView> {
             ],
           ),
           body: SafeArea(
-            child: Center(
-              child: Column(
-                children: [],
-              ),
+            child: ListView(
+              children: const [
+                Body()
+              ],
             ),
           )),
     );
